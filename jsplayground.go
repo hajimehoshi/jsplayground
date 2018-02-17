@@ -18,7 +18,8 @@ import (
 
 	"github.com/gopherjs/gopherjs/compiler"
 	"github.com/gopherjs/gopherjs/js"
-	"github.com/j7b/jsplayground/important"
+
+	"github.com/hajimehoshi/jsplayground/important"
 )
 
 var syncImport bool
