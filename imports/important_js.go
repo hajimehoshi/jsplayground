@@ -1,6 +1,6 @@
 // +build js
 
-package important
+package imports
 
 import (
 	"encoding/json"

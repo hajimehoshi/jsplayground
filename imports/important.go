@@ -1,4 +1,4 @@
-package important
+package imports
 
 import (
 	"bytes"

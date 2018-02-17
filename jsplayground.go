@@ -19,7 +19,7 @@ import (
 	"github.com/gopherjs/gopherjs/compiler"
 	"github.com/gopherjs/gopherjs/js"
 
-	"github.com/hajimehoshi/jsplayground/important"
+	"github.com/hajimehoshi/jsplayground/imports"
 )
 
 var syncImport bool
@@ -39,7 +39,7 @@ func (f *formatter) format(resolve, reject func(interface{})) {
 	var out []byte
 	var err error
 	if f.imports {
-		out, err = important.Process(f.code)
+		out, err = imports.Process(f.code)
 	} else {
 		out, err = format.Source(f.code)
 	}
@@ -175,14 +175,14 @@ func (g *Go) Format(src string, imports bool) *js.Object {
 
 var getting = map[string]struct{}{}
 
-func imports() {
-	if err := important.Imports(); err != nil {
+func importImports() {
+	if err := imports.Imports(); err != nil {
 		js.Global.Get("console").Call("warn", "additional imports: "+err.Error())
 	}
 }
 
 func main() {
-	go imports()
+	go importImports()
 	g := &Go{}
 	g.packages = map[string]*compiler.Archive{}
 	g.importContext = &compiler.ImportContext{

@@ -1,4 +1,4 @@
-package important
+package imports
 
 func AddImports(m map[string]string) {
 	for k, v := range m {

@@ -1,4 +1,4 @@
-package important_test
+package imports_test
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"go/token"
 	"testing"
 
-	. "github.com/hajimehoshi/jsplayground/important"
+	. "github.com/hajimehoshi/jsplayground/imports"
 )
 
 const testfile1 = `
