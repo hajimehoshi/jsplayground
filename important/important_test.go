@@ -1,4 +1,4 @@
-package important
+package important_test
 
 import (
 	"bytes"
@@ -6,6 +6,8 @@ import (
 	"go/printer"
 	"go/token"
 	"testing"
+
+	. "github.com/hajimehoshi/jsplayground/important"
 )
 
 const testfile1 = `
@@ -30,18 +32,17 @@ func main() {
 }
 `
 
-var fset = new(token.FileSet)
-
 func TestRemove(t *testing.T) {
+	fset := &token.FileSet{}
 	f, err := parser.ParseFile(fset, "test1.go", testfile1, parser.AllErrors)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = FixImports(fset, f)
-	if err != nil {
+	if _, err = FixImports(fset, f); err != nil {
 		t.Fatal(err)
 	}
-	buf := new(bytes.Buffer)
+
+	buf := &bytes.Buffer{}
 	err = printer.Fprint(buf, fset, f)
 	if err != nil {
 		t.Fatal(err)
@@ -50,15 +51,16 @@ func TestRemove(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
+	fset := &token.FileSet{}
 	f, err := parser.ParseFile(fset, "test2.go", testfile2, parser.AllErrors)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = FixImports(fset, f)
-	if err != nil {
+	if _, err = FixImports(fset, f); err != nil {
 		t.Fatal(err)
 	}
-	buf := new(bytes.Buffer)
+
+	buf := &bytes.Buffer{}
 	err = printer.Fprint(buf, fset, f)
 	if err != nil {
 		t.Fatal(err)

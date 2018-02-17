@@ -14,11 +14,12 @@ func Imports() error {
 		return err
 	}
 	defer res.Body.Close()
+
 	if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("imports: %s", res.Status)
 	}
 	decode := json.NewDecoder(res.Body).Decode
-	m := make(map[string]string)
+	m := map[string]string{}
 	if err = decode(&m); err != nil {
 		return err
 	}
