@@ -38,17 +38,16 @@ type formatter struct {
 func (f *formatter) format(resolve, reject func(interface{})) {
 	var out []byte
 	var err error
-	switch f.imports {
-	case true:
+	if f.imports {
 		out, err = important.Process(f.code)
-	case false:
+	} else {
 		out, err = format.Source(f.code)
 	}
-	if err == nil {
-		resolve(string(out))
+	if err != nil {
+		reject(err.Error())
 		return
 	}
-	reject(err.Error())
+	resolve(string(out))
 }
 
 func promise(f func(resolve, reject func(interface{}))) *js.Object {
@@ -65,7 +64,7 @@ type Go struct {
 
 func (g *Go) loadpkg(path string) {
 	if g.packagerr == nil {
-		g.packagerr = make(map[string]error)
+		g.packagerr = map[string]error{}
 	}
 	if _, ok := g.packages[path]; ok {
 		return
@@ -162,7 +161,7 @@ func (g *Go) compile(resolve, reject func(interface{})) {
 			reject(err.Error())
 			return
 		}
-		jsCode := new(bytes.Buffer)
+		jsCode := &bytes.Buffer{}
 		compiler.WriteProgramCode(allPkgs, &compiler.SourceMapFilter{Writer: jsCode})
 		resolve(jsCode.String())
 	}()
@@ -174,7 +173,7 @@ func (g *Go) Format(src string, imports bool) *js.Object {
 	return promise(f.format)
 }
 
-var getting = make(map[string]struct{})
+var getting = map[string]struct{}{}
 
 func imports() {
 	if err := important.Imports(); err != nil {
@@ -184,10 +183,10 @@ func imports() {
 
 func main() {
 	go imports()
-	g := new(Go)
-	g.packages = make(map[string]*compiler.Archive)
+	g := &Go{}
+	g.packages = map[string]*compiler.Archive{}
 	g.importContext = &compiler.ImportContext{
-		Packages: make(map[string]*types.Package),
+		Packages: map[string]*types.Package{},
 		Import: func(path string) (a *compiler.Archive, err error) {
 			if pkg, found := g.packages[path]; found {
 				return pkg, nil
@@ -220,7 +219,7 @@ func main() {
 				return p, nil
 			}
 			if _, ok := getting[path]; ok {
-				return new(compiler.Archive), nil
+				return &compiler.Archive{}, nil
 			}
 			getting[path] = struct{}{}
 			go func() {
@@ -247,7 +246,7 @@ func main() {
 				}
 				g.packages[path] = p
 			}()
-			return new(compiler.Archive), nil
+			return &compiler.Archive{}, nil
 		},
 	}
 	js.Global.Set("Go", js.MakeWrapper(g))
